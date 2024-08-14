@@ -54,9 +54,109 @@ const CalculationResults = ({
   value: number | string;
 }) => {
   return (
-    <div className='grid grid-cols-2 items-center relative w-full my-2 px-3'>
+    <div className='grid grid-cols-2 items-center relative w-full my-2 px-3 py-1'>
       <div className='col-span-1 text-left'>{label}</div>
       <div className='col-span-1 text-right text-[#e2e6c3]'>{value}</div>
+    </div>
+  );
+};
+
+const ResultsSection = ({
+  amount,
+  interestRate,
+  inflationRate,
+  tenure,
+  maturityAmount,
+  returns,
+  differenceValue,
+  actualReturn,
+  adjustedReturn,
+}: {
+  amount: string;
+  interestRate: number;
+  inflationRate: number;
+  tenure: number;
+  maturityAmount: string;
+  returns: string;
+  differenceValue: string;
+  actualReturn: string;
+  adjustedReturn: string;
+}) => {
+  return (
+    <div>
+      <CalculationResults
+        label='Present Value'
+        value={amount}
+      />
+      <CalculationResults
+        label='Interest Rate (%)'
+        value={interestRate}
+      />
+      <CalculationResults
+        label='Inflation Rate (%)'
+        value={inflationRate}
+      />
+
+      <CalculationResults
+        label='Duration'
+        value={tenure === 0 ? 0 : tenure === 1 ? `${tenure}Y` : `${tenure}Yrs`}
+      />
+
+      <div className='w-full bg-[#70772d] rounded-lg relative '>
+        <CalculationResults
+          label='Maturity Value'
+          value={maturityAmount}
+        />
+      </div>
+
+      <div className='w-full bg-[#886332] rounded-lg relative '>
+        <CalculationResults
+          label='Inflation adjusted Value'
+          value={returns}
+        />
+      </div>
+
+      <div className='w-full bg-[#973f38] rounded-lg relative '>
+        <CalculationResults
+          label='Difference'
+          value={differenceValue}
+        />
+      </div>
+
+      <div className='w-full bg-[#565a4f] rounded-lg relative pb-1'>
+        <p className='text-center text-gray-300 p-2'>Returns</p>
+        <CalculationResults
+          label='Maturity returns'
+          value={actualReturn}
+        />
+        <CalculationResults
+          label='Adjusted returns'
+          value={adjustedReturn}
+        />
+      </div>
+
+      <div className='mt-4'>
+        <Alert
+          variant='default'
+          className='bg-transparent border border-gray-400 text-gray-300'>
+          {/* <Terminal className='h-4 w-4' /> */}
+          {/* <AlertTitle>Heads up!</AlertTitle> */}
+          <AlertDescription>
+            <p>
+              <span className='text-white'>Maturity Value </span>
+              is the value without considering inflation.
+            </p>
+            <p>
+              <span className='text-white'>Inflation adjusted Value </span>
+              reflects its equivalent worth in today’s value.
+            </p>
+            <p>
+              <span className='text-white'>Difference</span> is the added costs
+              needed, caused due to inflation.
+            </p>
+          </AlertDescription>
+        </Alert>
+      </div>
     </div>
   );
 };
@@ -113,7 +213,9 @@ const DepositCalculator = () => {
     setReturns(formatValue(inflationRate > 0 ? realReturn : 0));
     setDifferenceValue(formatValue(realReturn - futureValue));
     setActualReturn(formatValue(futureValue - principal));
-    setAdjustedReturn(formatValue(realReturn - principal));
+    setAdjustedReturn(
+      formatValue(inflationRate > 0 ? realReturn - principal : 0),
+    );
   };
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
@@ -248,82 +350,17 @@ const DepositCalculator = () => {
         </div>
 
         <div className='col-span-1 flex flex-col gap-2 justify-center items-center w-full h-full p-5 bg-[#4c745e] text-gray-200 '>
-          <CalculationResults
-            label='Present Value'
-            value={amount}
+          <ResultsSection
+            amount={amount}
+            interestRate={interestRate}
+            inflationRate={inflationRate}
+            tenure={tenure}
+            maturityAmount={maturityAmount}
+            returns={returns}
+            differenceValue={differenceValue}
+            actualReturn={actualReturn}
+            adjustedReturn={adjustedReturn}
           />
-          <CalculationResults
-            label='Interest Rate (%)'
-            value={interestRate}
-          />
-          <CalculationResults
-            label='Inflation Rate (%)'
-            value={inflationRate}
-          />
-
-          <CalculationResults
-            label='Duration'
-            value={
-              tenure === 0 ? 0 : tenure === 1 ? `${tenure}Y` : `${tenure}Yrs`
-            }
-          />
-
-          <div className='w-full bg-[#70772d] rounded-lg relative '>
-            <CalculationResults
-              label='Maturity Value'
-              value={maturityAmount}
-            />
-          </div>
-
-          <div className='w-full bg-[#886332] rounded-lg relative '>
-            <CalculationResults
-              label='Inflation adjusted Value'
-              value={returns}
-            />
-          </div>
-
-          <div className='w-full bg-[#973f38] rounded-lg relative '>
-            <CalculationResults
-              label='Difference'
-              value={differenceValue}
-            />
-          </div>
-
-          <div className='w-full bg-[#565a4f] rounded-lg relative'>
-            <p className='text-center p-2'>Returns</p>
-            <CalculationResults
-              label='Actual returns'
-              value={actualReturn}
-            />
-            <CalculationResults
-              label='Adjusted returns'
-              value={adjustedReturn}
-            />
-          </div>
-
-          <div className='mt-4'>
-            <Alert
-              variant='default'
-              className='bg-transparent border border-gray-400 text-gray-300'>
-              {/* <Terminal className='h-4 w-4' /> */}
-              {/* <AlertTitle>Heads up!</AlertTitle> */}
-              <AlertDescription>
-                <p>
-                  <span className='text-white'>Maturity Value </span>
-                  is the value without considering inflation.
-                </p>
-                <p>
-                  <span className='text-white'>Inflation adjusted Value </span>
-                  reflects its equivalent worth in today’s value.
-                </p>
-                <p>
-                  <span className='text-white'>Difference</span> is the added
-                  costs needed, caused due to inflation.
-                </p>
-              </AlertDescription>
-            </Alert>
-          </div>
-
           {/* <div className='grid grid-cols-2 relative'>
               <div className='col-span-1'>
                 <ul className='space-y-2'>

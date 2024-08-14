@@ -110,7 +110,7 @@ const DepositCalculator = () => {
     setInflationRate(inflationRate);
     setTenure(tenure);
     setMaturityAmount(formatValue(futureValue));
-    setReturns(formatValue(inflationRate > 0 ? realReturn : futureValue));
+    setReturns(formatValue(inflationRate > 0 ? realReturn : 0));
     setDifferenceValue(formatValue(realReturn - futureValue));
     setActualReturn(formatValue(futureValue - principal));
     setAdjustedReturn(formatValue(realReturn - principal));
@@ -126,210 +126,205 @@ const DepositCalculator = () => {
   }
 
   return (
-    <div className='flex justify-center items-center w-full h-full md:h-screen md:bg-[#2b664c] relative'>
-      <div className='relative flex md:max-w-[70%] h-fit flex-col items-center justify-center overflow-hidden rounded-lg border border-transparent'>
-        <div className='w-full h-full py-10 md:p-4 md:text-slate-200 text-2xl font-semibold text-center'>
-          Returns Calculator
-        </div>
-        <div className='grid grid-cols-1 md:grid-cols-2 bg-[#3b654e]'>
-          <div className='col-span-1 flex justify-center items-center py-10 text-white'>
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className='w-2/3 space-y-6'>
-                <FormField
-                  control={form.control}
-                  name='amount'
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className='text-gray-300'>
-                        Amount (₹)
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          className='text-right [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'
-                          //   placeholder='shadcn'
-                          type='number'
-                          {...field}
-                          onChange={(event) =>
-                            field.onChange(+event.target.value)
-                          }
-                        />
-                      </FormControl>
-                      {/* <FormDescription>
+    <div className='relative flex md:max-w-[70%] h-fit flex-col items-center justify-center overflow-hidden rounded-lg border border-transparent'>
+      <div className='w-full h-full py-10 md:p-4 md:text-slate-200 text-2xl font-semibold text-center'>
+        Returns Calculator
+      </div>
+      <div className='grid grid-cols-1 md:grid-cols-2 bg-[#3b654e]'>
+        <div className='col-span-1 flex justify-center items-center py-10 text-white'>
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className='w-2/3 space-y-6'>
+              <FormField
+                control={form.control}
+                name='amount'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className='text-gray-300'>Amount (₹)</FormLabel>
+                    <FormControl>
+                      <Input
+                        className='text-right [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'
+                        //   placeholder='shadcn'
+                        type='number'
+                        {...field}
+                        onChange={(event) =>
+                          field.onChange(+event.target.value)
+                        }
+                      />
+                    </FormControl>
+                    {/* <FormDescription>
                         This is your public display name.
                       </FormDescription> */}
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-                <FormField
-                  control={form.control}
-                  name='rateOfInterest'
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className='text-gray-300'>
-                        Rate of Interest (%)
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          className='text-right [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'
-                          //   placeholder='shadcn'
-                          type='number'
-                          step='0.01'
-                          {...field}
-                          onChange={(event) =>
-                            field.onChange(+event.target.value)
-                          }
-                        />
-                      </FormControl>
+              <FormField
+                control={form.control}
+                name='rateOfInterest'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className='text-gray-300'>
+                      Rate of Interest (%)
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        className='text-right [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'
+                        //   placeholder='shadcn'
+                        type='number'
+                        step='0.01'
+                        {...field}
+                        onChange={(event) =>
+                          field.onChange(+event.target.value)
+                        }
+                      />
+                    </FormControl>
 
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-                <FormField
-                  control={form.control}
-                  name='rateOfInflation'
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className='text-gray-300'>
-                        Rate of Inflation (%)
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          className='text-right [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'
-                          //   placeholder='shadcn'
-                          type='number'
-                          step='0.01'
-                          {...field}
-                          onChange={(event) =>
-                            field.onChange(+event.target.value)
-                          }
-                        />
-                      </FormControl>
+              <FormField
+                control={form.control}
+                name='rateOfInflation'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className='text-gray-300'>
+                      Rate of Inflation (%)
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        className='text-right [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'
+                        //   placeholder='shadcn'
+                        type='number'
+                        step='0.01'
+                        {...field}
+                        onChange={(event) =>
+                          field.onChange(+event.target.value)
+                        }
+                      />
+                    </FormControl>
 
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-                <FormField
-                  control={form.control}
-                  name='timePeriod'
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className='text-gray-300'>
-                        Time Period (in Years)
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          className='text-right [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'
-                          //   placeholder='shadcn'
-                          type='number'
-                          {...field}
-                          onChange={(event) =>
-                            field.onChange(+event.target.value)
-                          }
-                        />
-                      </FormControl>
+              <FormField
+                control={form.control}
+                name='timePeriod'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className='text-gray-300'>
+                      Time Period (in Years)
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        className='text-right [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'
+                        //   placeholder='shadcn'
+                        type='number'
+                        {...field}
+                        onChange={(event) =>
+                          field.onChange(+event.target.value)
+                        }
+                      />
+                    </FormControl>
 
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-                <Button
-                  className='bg-[#25412e]'
-                  type='submit'>
-                  Calculate
-                </Button>
-              </form>
-            </Form>
+              <Button
+                className='bg-[#25412e]'
+                type='submit'>
+                Calculate
+              </Button>
+            </form>
+          </Form>
+        </div>
+
+        <div className='col-span-1 flex flex-col gap-2 justify-center items-center w-full h-full p-5 bg-[#4c745e] text-gray-200 '>
+          <CalculationResults
+            label='Present Value'
+            value={amount}
+          />
+          <CalculationResults
+            label='Interest Rate (%)'
+            value={interestRate}
+          />
+          <CalculationResults
+            label='Inflation Rate (%)'
+            value={inflationRate}
+          />
+
+          <CalculationResults
+            label='Duration'
+            value={
+              tenure === 0 ? 0 : tenure === 1 ? `${tenure}Y` : `${tenure}Yrs`
+            }
+          />
+
+          <div className='w-full bg-[#70772d] rounded-lg relative '>
+            <CalculationResults
+              label='Maturity Value'
+              value={maturityAmount}
+            />
           </div>
 
-          <div className='col-span-1 flex flex-col gap-2 justify-center items-center w-full h-full p-5 bg-[#4c745e] text-gray-200 '>
+          <div className='w-full bg-[#886332] rounded-lg relative '>
             <CalculationResults
-              label='Present Value'
-              value={amount}
+              label='Inflation adjusted Value'
+              value={returns}
+            />
+          </div>
+
+          <div className='w-full bg-[#973f38] rounded-lg relative '>
+            <CalculationResults
+              label='Difference'
+              value={differenceValue}
+            />
+          </div>
+
+          <div className='w-full bg-[#565a4f] rounded-lg relative'>
+            <p className='text-center p-2'>Returns</p>
+            <CalculationResults
+              label='Actual returns'
+              value={actualReturn}
             />
             <CalculationResults
-              label='Interest Rate (%)'
-              value={interestRate}
+              label='Adjusted returns'
+              value={adjustedReturn}
             />
-            <CalculationResults
-              label='Inflation Rate (%)'
-              value={inflationRate}
-            />
+          </div>
 
-            <CalculationResults
-              label='Duration'
-              value={
-                tenure === 0 ? 0 : tenure === 1 ? `${tenure}Y` : `${tenure}Yrs`
-              }
-            />
+          <div className='mt-4'>
+            <Alert
+              variant='default'
+              className='bg-transparent border border-gray-400 text-gray-300'>
+              {/* <Terminal className='h-4 w-4' /> */}
+              {/* <AlertTitle>Heads up!</AlertTitle> */}
+              <AlertDescription>
+                <p>
+                  <span className='text-white'>Maturity Value </span>
+                  is the value without considering inflation.
+                </p>
+                <p>
+                  <span className='text-white'>Inflation adjusted Value </span>
+                  reflects its equivalent worth in today’s value.
+                </p>
+                <p>
+                  <span className='text-white'>Difference</span> is the added
+                  costs needed, caused due to inflation.
+                </p>
+              </AlertDescription>
+            </Alert>
+          </div>
 
-            <div className='w-full bg-[#70772d] rounded-lg relative '>
-              <CalculationResults
-                label='Maturity Value'
-                value={maturityAmount}
-              />
-            </div>
-
-            <div className='w-full bg-[#886332] rounded-lg relative '>
-              <CalculationResults
-                label='Inflation adjusted Value'
-                value={returns}
-              />
-            </div>
-
-            <div className='w-full bg-[#973f38] rounded-lg relative '>
-              <CalculationResults
-                label='Difference'
-                value={differenceValue}
-              />
-            </div>
-
-            <div className='w-full bg-[#565a4f] rounded-lg relative'>
-              <p className='text-center p-2'>Returns</p>
-              <CalculationResults
-                label='Actual returns'
-                value={actualReturn}
-              />
-              <CalculationResults
-                label='Adjusted returns'
-                value={adjustedReturn}
-              />
-            </div>
-
-            <div className='mt-4'>
-              <Alert
-                variant='default'
-                className='bg-transparent border border-gray-400 text-gray-300'>
-                {/* <Terminal className='h-4 w-4' /> */}
-                {/* <AlertTitle>Heads up!</AlertTitle> */}
-                <AlertDescription>
-                  <p>
-                    <span className='text-white'>Maturity Value </span>
-                    is the value without considering inflation.
-                  </p>
-                  <p>
-                    <span className='text-white'>
-                      Inflation adjusted Value{' '}
-                    </span>
-                    reflects its equivalent worth in today’s value.
-                  </p>
-                  <p>
-                    <span className='text-white'>Difference</span> is the added
-                    costs needed, caused due to inflation.
-                  </p>
-                </AlertDescription>
-              </Alert>
-            </div>
-
-            {/* <div className='grid grid-cols-2 relative'>
+          {/* <div className='grid grid-cols-2 relative'>
               <div className='col-span-1'>
                 <ul className='space-y-2'>
                   <li>Amount</li>
@@ -352,15 +347,14 @@ const DepositCalculator = () => {
                 </ul>
               </div>
             </div> */}
-          </div>
         </div>
-        <BorderBeam
-          size={250}
-          duration={25}
-          delay={15}
-          className='md:visible'
-        />
       </div>
+      <BorderBeam
+        size={250}
+        duration={25}
+        delay={15}
+        className='md:visible'
+      />
     </div>
   );
 };

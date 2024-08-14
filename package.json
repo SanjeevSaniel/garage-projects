@@ -1,7 +1,10 @@
 {
-  "name": "1-garage_projects",
-  "version": "0.1.0",
-  "private": true,
+  "name": "deposit-calculator",
+  "version": "0.1.1",
+  "private": false,
+  "files": [
+    "/lib"
+  ],
   "scripts": {
     "dev": "next dev",
     "build": "next build",

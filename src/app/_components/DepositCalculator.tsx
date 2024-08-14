@@ -1,27 +1,27 @@
 'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
+import { BorderBeam } from '@/components/magicui/border-beam';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { BorderBeam } from '@/components/magicui/border-beam';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 
 const FormSchema = z.object({
   amount: z.number().gte(100, { message: 'Amount must be minimun 100' }),
   rateOfInterest: z
     .number()
-    .gte(0)
+    .gt(0)
     .refine(
       (value) => {
         const decimalPart = value.toString().split('.')[1];
@@ -46,12 +46,31 @@ const FormSchema = z.object({
   timePeriod: z.number().min(1),
 });
 
+const CalculationResults = ({
+  label,
+  value,
+}: {
+  label: string;
+  value: number | string;
+}) => {
+  return (
+    <div className='grid grid-cols-2 items-center relative w-full my-2 px-3'>
+      <div className='col-span-1 text-left'>{label}</div>
+      <div className='col-span-1 text-right text-[#e2e6c3]'>{value}</div>
+    </div>
+  );
+};
+
 const DepositCalculator = () => {
   const [amount, setAmount] = useState('0');
   const [interestRate, setInterestRate] = useState(0);
   const [inflationRate, setInflationRate] = useState(0);
   const [tenure, setTenure] = useState(0);
+  const [maturityAmount, setMaturityAmount] = useState('0');
   const [returns, setReturns] = useState('0');
+  const [differenceValue, setDifferenceValue] = useState('0');
+  const [actualReturn, setActualReturn] = useState('0');
+  const [adjustedReturn, setAdjustedReturn] = useState('0');
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -90,7 +109,11 @@ const DepositCalculator = () => {
     setInterestRate(interestRate);
     setInflationRate(inflationRate);
     setTenure(tenure);
+    setMaturityAmount(formatValue(futureValue));
     setReturns(formatValue(inflationRate > 0 ? realReturn : futureValue));
+    setDifferenceValue(formatValue(realReturn - futureValue));
+    setActualReturn(formatValue(futureValue - principal));
+    setAdjustedReturn(formatValue(realReturn - principal));
   };
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
@@ -103,13 +126,13 @@ const DepositCalculator = () => {
   }
 
   return (
-    <div className='flex justify-center items-center w-full h-screen bg-[#2b664c]'>
-      <div className='relative flex h-fit w-fit flex-col items-center justify-center overflow-hidden rounded-lg border border-transparent shadow-xl'>
-        <div className='w-full h-full p-2 bg-[#6f706f] text-slate-200 text-center'>
-          Fixed Deposit Calculator
+    <div className='flex justify-center items-center w-full h-full md:h-screen md:bg-[#2b664c] relative'>
+      <div className='relative flex md:max-w-[70%] h-fit flex-col items-center justify-center overflow-hidden rounded-lg border border-transparent'>
+        <div className='w-full h-full py-10 md:p-4 md:text-slate-200 text-2xl font-semibold text-center'>
+          Returns Calculator
         </div>
-        <div className='grid grid-cols-2 bg-[#3b654e]'>
-          <div className='col-span-1 flex justify-center items-center p-5 text-white'>
+        <div className='grid grid-cols-1 md:grid-cols-2 bg-[#3b654e]'>
+          <div className='col-span-1 flex justify-center items-center py-10 text-white'>
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
@@ -119,7 +142,9 @@ const DepositCalculator = () => {
                   name='amount'
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Amount</FormLabel>
+                      <FormLabel className='text-gray-300'>
+                        Amount (₹)
+                      </FormLabel>
                       <FormControl>
                         <Input
                           className='text-right [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'
@@ -144,7 +169,9 @@ const DepositCalculator = () => {
                   name='rateOfInterest'
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Rate of Interest</FormLabel>
+                      <FormLabel className='text-gray-300'>
+                        Rate of Interest (%)
+                      </FormLabel>
                       <FormControl>
                         <Input
                           className='text-right [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'
@@ -168,7 +195,9 @@ const DepositCalculator = () => {
                   name='rateOfInflation'
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Rate of Inflation</FormLabel>
+                      <FormLabel className='text-gray-300'>
+                        Rate of Inflation (%)
+                      </FormLabel>
                       <FormControl>
                         <Input
                           className='text-right [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'
@@ -192,7 +221,9 @@ const DepositCalculator = () => {
                   name='timePeriod'
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Time Period (in Years)</FormLabel>
+                      <FormLabel className='text-gray-300'>
+                        Time Period (in Years)
+                      </FormLabel>
                       <FormControl>
                         <Input
                           className='text-right [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'
@@ -219,8 +250,86 @@ const DepositCalculator = () => {
             </Form>
           </div>
 
-          <div className='col-span-1 flex justify-center items-center w-full h-full p-10 bg-[#4c745e] text-white'>
-            <div className='grid grid-cols-2 relative'>
+          <div className='col-span-1 flex flex-col gap-2 justify-center items-center w-full h-full p-5 bg-[#4c745e] text-gray-200 '>
+            <CalculationResults
+              label='Present Value'
+              value={amount}
+            />
+            <CalculationResults
+              label='Interest Rate (%)'
+              value={interestRate}
+            />
+            <CalculationResults
+              label='Inflation Rate (%)'
+              value={inflationRate}
+            />
+
+            <CalculationResults
+              label='Duration'
+              value={
+                tenure === 0 ? 0 : tenure === 1 ? `${tenure}Y` : `${tenure}Yrs`
+              }
+            />
+
+            <div className='w-full bg-[#70772d] rounded-lg relative '>
+              <CalculationResults
+                label='Maturity Value'
+                value={maturityAmount}
+              />
+            </div>
+
+            <div className='w-full bg-[#886332] rounded-lg relative '>
+              <CalculationResults
+                label='Inflation adjusted Value'
+                value={returns}
+              />
+            </div>
+
+            <div className='w-full bg-[#973f38] rounded-lg relative '>
+              <CalculationResults
+                label='Difference'
+                value={differenceValue}
+              />
+            </div>
+
+            <div className='w-full bg-[#565a4f] rounded-lg relative'>
+              <p className='text-center p-2'>Returns</p>
+              <CalculationResults
+                label='Actual returns'
+                value={actualReturn}
+              />
+              <CalculationResults
+                label='Adjusted returns'
+                value={adjustedReturn}
+              />
+            </div>
+
+            <div className='mt-4'>
+              <Alert
+                variant='default'
+                className='bg-transparent border border-gray-400 text-gray-300'>
+                {/* <Terminal className='h-4 w-4' /> */}
+                {/* <AlertTitle>Heads up!</AlertTitle> */}
+                <AlertDescription>
+                  <p>
+                    <span className='text-white'>Maturity Value </span>
+                    is the value without considering inflation.
+                  </p>
+                  <p>
+                    <span className='text-white'>
+                      Inflation adjusted Value{' '}
+                    </span>
+                    reflects its equivalent worth in today’s value.
+                  </p>
+                  <p>
+                    <span className='text-white'>Difference</span> is the added
+                    costs needed, caused due to inflation.
+                  </p>
+                </AlertDescription>
+              </Alert>
+            </div>
+
+            {/* <div className='grid grid-cols-2 relative'>
               <div className='col-span-1'>
                 <ul className='space-y-2'>
                   <li>Amount</li>
@@ -242,13 +351,14 @@ const DepositCalculator = () => {
                   <li>{returns}</li>
                 </ul>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
         <BorderBeam
           size={250}
           duration={25}
           delay={15}
+          className='md:visible'
         />
       </div>
     </div>

@@ -228,8 +228,8 @@ const DepositCalculator = () => {
   }
 
   return (
-    <div className='relative flex md:max-w-[70%] h-fit flex-col items-center justify-center overflow-hidden rounded-lg border border-transparent'>
-      <div className='w-full h-full py-10 md:p-4 md:text-slate-200 text-2xl font-semibold text-center'>
+    <div className='relative flex md:max-w-[70%] h-fit flex-col items-center justify-center overflow-hidden rounded-lg border border-transparent z-20'>
+      <div className='w-full h-full py-10 md:p-4 md:text-slate-700 text-3xl font-semibold text-center'>
         Returns Calculator
       </div>
       <div className='grid grid-cols-1 md:grid-cols-2 bg-[#3b654e]'>
@@ -243,7 +243,7 @@ const DepositCalculator = () => {
                 name='amount'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className='text-gray-300'>Amount (₹)</FormLabel>
+                    <FormLabel className='text-gray-100'>Amount (₹)</FormLabel>
                     <FormControl>
                       <Input
                         className='text-right [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'
@@ -268,7 +268,7 @@ const DepositCalculator = () => {
                 name='rateOfInterest'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className='text-gray-300'>
+                    <FormLabel className='text-gray-100'>
                       Rate of Interest (%)
                     </FormLabel>
                     <FormControl>
@@ -294,7 +294,7 @@ const DepositCalculator = () => {
                 name='rateOfInflation'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className='text-gray-300'>
+                    <FormLabel className='text-gray-100'>
                       Rate of Inflation (%)
                     </FormLabel>
                     <FormControl>
@@ -320,7 +320,7 @@ const DepositCalculator = () => {
                 name='timePeriod'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className='text-gray-300'>
+                    <FormLabel className='text-gray-100'>
                       Time Period (in Years)
                     </FormLabel>
                     <FormControl>
@@ -349,7 +349,7 @@ const DepositCalculator = () => {
           </Form>
         </div>
 
-        <div className='col-span-1 flex flex-col gap-2 justify-center items-center w-full h-full p-5 bg-[#4c745e] text-gray-200 '>
+        <div className='col-span-1 flex flex-col gap-2 justify-center items-center w-full h-full p-5 bg-[#4c745e] text-gray-100 '>
           <ResultsSection
             amount={amount}
             interestRate={interestRate}
@@ -361,29 +361,6 @@ const DepositCalculator = () => {
             actualReturn={actualReturn}
             adjustedReturn={adjustedReturn}
           />
-          {/* <div className='grid grid-cols-2 relative'>
-              <div className='col-span-1'>
-                <ul className='space-y-2'>
-                  <li>Amount</li>
-                  <li>Interest Rate</li>
-                  <li>Inflation Rate</li>
-                  <li>Duration</li>
-                  <li>Maturity Amount</li>
-                </ul>
-              </div>
-              <div className='col-span-1 text-right'>
-                <ul className='space-y-2'>
-                  <li>{amount}</li>
-                  <li>{interestRate}</li>
-                  <li>{inflationRate}</li>
-                  <li>
-                    {tenure}{' '}
-                    {tenure === 0 ? '' : tenure === 1 ? 'year' : 'years'}
-                  </li>
-                  <li>{returns}</li>
-                </ul>
-              </div>
-            </div> */}
         </div>
       </div>
       <BorderBeam

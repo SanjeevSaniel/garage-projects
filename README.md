@@ -18,19 +18,53 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+# Deposit Returns Calculator
 
-## Learn More
+## Description
 
-To learn more about Next.js, take a look at the following resources:
+This project calculates the real value of an investment after accounting for compound interest and inflation. It uses JavaScript to perform the calculations.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Installation
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+1. Clone the repository:
 
-## Deploy on Vercel
+   ```sh
+    git clone https://github.com/SanjeevSaniel/garage-projects
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+2. Navigate to the project directory:
+    cd deposit-returns-calculator
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+3. Install dependencies (if any):
+    npm install
+
+### To calculate the real value of an investment, use the calculateRealValue
+
+```sh
+    function calculateRealValue(
+        principal, 
+        annualInterestRate, 
+        compoundingFrequency, 
+        years, 
+        inflationRate
+    ) {
+        // Calculate the future value with compound interest
+        const futureValue = principal * Math.pow(
+            (1 + annualInterestRate / compoundingFrequency), compoundingFrequency * years);
+
+        // Adjust for inflation
+        const realValue = futureValue / Math.pow((1 + inflationRate), years);
+
+        return realValue;
+    }
+
+
+    // Example usage:
+
+    const principal = 10000; // Initial deposit
+    const annualInterestRate = 0.05; // 5% annual interest rate
+    const compoundingFrequency = 4; // Quarterly compounding
+    const years = 10; // Investment period in years
+    const inflationRate = 0.02; // 2% annual inflation rate
+
+    const realValue = calculateRealValue(principal, annualInterestRate, compoundingFrequency, years, inflationRate);
+    console.log(`The real value of the investment after ${years} years is: $${realValue.toFixed(2)}`);

@@ -367,7 +367,7 @@ const DepositCalculator = () => {
         size={250}
         duration={25}
         delay={15}
-        className='md:visible'
+        className='hidden md:visible'
       />
     </div>
   );

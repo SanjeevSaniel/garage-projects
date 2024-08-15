@@ -228,8 +228,8 @@ const DepositCalculator = () => {
   }
 
   return (
-    <div className='relative flex md:max-w-[70%] h-fit flex-col items-center justify-center overflow-hidden rounded-lg border border-transparent z-20'>
-      <div className='w-full h-full py-10 md:p-4 md:text-slate-700 text-3xl font-semibold text-center'>
+    <div className='relative flex md:max-w-[70%] h-full flex-col items-center justify-center md:overflow-hidden rounded-lg border border-transparent z-20'>
+      <div className='w-full py-10 md:p-4 md:text-slate-700 text-3xl font-semibold text-center'>
         Returns Calculator
       </div>
       <div className='grid grid-cols-1 md:grid-cols-2 bg-[#3b654e]'>

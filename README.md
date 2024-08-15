@@ -24,6 +24,8 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project calculates the real value of an investment after accounting for compound interest and inflation. It uses JavaScript to perform the calculations.
 
+- NPM Package: <https://www.npmjs.com/package/deposit-calculator?activeTab=readme>
+
 ## Installation
 
 1. Clone the repository:

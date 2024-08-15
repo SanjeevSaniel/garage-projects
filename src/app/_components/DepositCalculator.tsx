@@ -17,6 +17,14 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+
 const FormSchema = z.object({
   amount: z.number().gte(100, { message: 'Amount must be minimun 100' }),
   rateOfInterest: z
@@ -44,6 +52,11 @@ const FormSchema = z.object({
       },
     ),
   timePeriod: z.number().min(1),
+  compounding: z
+    .string({
+      required_error: 'Please select compounding frequency',
+    })
+    
 });
 
 const CalculationResults = ({
@@ -161,6 +174,25 @@ const ResultsSection = ({
   );
 };
 
+const frequency = [
+  {
+    id: 1,
+    value: 'monthly',
+  },
+  {
+    id: 2,
+    value: 'quarterly',
+  },
+  {
+    id: 3,
+    value: 'half yearly',
+  },
+  {
+    id: 4,
+    value: 'yearly',
+  },
+];
+
 const DepositCalculator = () => {
   const [amount, setAmount] = useState('0');
   const [interestRate, setInterestRate] = useState(0);
@@ -172,6 +204,7 @@ const DepositCalculator = () => {
   const [actualReturn, setActualReturn] = useState('0');
   const [adjustedReturn, setAdjustedReturn] = useState('0');
 
+  let freq = 0;
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     // defaultValues: {
@@ -194,10 +227,31 @@ const DepositCalculator = () => {
     interestRate: number,
     inflationRate: number,
     tenure: number,
+    compoundingFrequency: string,
   ) => {
+    switch (compoundingFrequency) {
+      case 'monthly':
+        freq = 12;
+        break;
+
+      case 'quarterly':
+        freq = 3;
+        break;
+
+      case 'half yearly':
+        freq = 2;
+        break;
+
+      default:
+        freq = 1;
+        break;
+    }
+
     // Calculate Future Value (FV)
     const futureValue = Number(
-      (principal * Math.pow(1 + interestRate / 100, tenure)).toFixed(2),
+      (
+        principal * Math.pow(1 + interestRate / 100 / freq, freq * tenure)
+      ).toFixed(2),
     );
 
     // Adjust for Inflation
@@ -216,14 +270,19 @@ const DepositCalculator = () => {
     setAdjustedReturn(
       formatValue(inflationRate > 0 ? realReturn - principal : 0),
     );
+
+    freq = 0;
   };
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
+    console.log(data);
+
     calculate(
       data.amount,
       data.rateOfInterest,
       data.rateOfInflation,
       data.timePeriod,
+      data.compounding,
     );
   }
 
@@ -334,6 +393,37 @@ const DepositCalculator = () => {
                         }
                       />
                     </FormControl>
+
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name='compounding'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Compounding Frequency</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder='Select frequency' />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {frequency.map((f) => (
+                          <SelectItem
+                            key={f.id}
+                            value={f.value}
+                            className='capitalize'>
+                            {f.value}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
 
                     <FormMessage />
                   </FormItem>
